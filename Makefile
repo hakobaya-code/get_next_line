@@ -1,7 +1,7 @@
 NAME = gnl.a
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-SRCS =
+SRCS = get_next_line.c get_next_line_util.c
 OBJS = $(SRCS:.c=.o)
 
 all: $(NAME)
