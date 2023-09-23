@@ -5,179 +5,115 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hakobaya <hakobaya@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/25 10:34:58 by hakobaya          #+#    #+#             */
-/*   Updated: 2023/07/02 19:02:59 by hakobaya         ###   ########.fr       */
+/*   Created: 2023/09/23 10:18:33 by hakobaya          #+#    #+#             */
+/*   Updated: 2023/09/24 06:23:17 by hakobaya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
 
-//int	buf_error(char *buf)
-//{
-//	if (buf == NULL)
-//		return (-1);
-//}
-
-char	*ft_strchr(const char *s, int c)
-{
-	size_t	i;
-	char	*str;
-
-	i = 0;
-	str = (char *)s;
-	if (c == '\0')
-	{
-		i = ft_strlen(str);
-		return (&str[i]);
-	}
-	if (c < 0)
-		c = c % 128 + 128;
-	if (c > 127)
-		c %= 128;
-	while (str[i] != c && str[i] != '\0')
-		i++;
-	if (str[i] == c)
-		return (&str[i]);
-	return (NULL);
-}
-
-size_t	ft_strlen(const char *s)
-{
-	size_t	i;
-	char	*str;
-
-	i = 0;
-	str = (char *)s;
-	while (s[i] != '\0')
-		i++;
-	return (i);
-}
-
-void	*ft_memcpy(void *dst, const void *src)
-{
-	size_t			i;
-	unsigned char	*dest;
-	unsigned char	*source;
-
-	if (dst == NULL && src == NULL)
-		return (NULL);
-	i = 0;
-	dest = (unsigned char *)dst;
-	source = (unsigned char *)src;
-	while (source[i] != '\0')
-	{
-		dest[i] = source[i];
-		i++;
-	}
-	return (dst);
-}
-
-char	*ft_strdup(const char *s1)
-{
-	char	*dup;
-	size_t	len;
-	size_t	i;
-
-	len = ft_strlen(s1) + 1;
-	dup = (char *)malloc(sizeof(char) * len);
-	if (!dup)
-		return (NULL);
-	i = 0;
-	while (s1[i] != '\0')
-	{
-		dup[i] = s1[i];
-		i++;
-	}
-	dup[i] = '\0';
-	return (dup);
-}
-
-void	read_fd(int fd, const char *save)
-{
-	size_t	i;
-	size_t	len;
-	ssize_t	ret;
-	char	*buf;
-	size_t	count;
-
-	buf = (char *)malloc(sizeof(char) * BUFFER_SIZE);
-	ret = read(fd, buf, BUFFER_SIZE);
-	printf("%d\n", ret);
-	i = 0;
-	count = 0;
-	//if (*save)
-	//{
-	//	while (*save != '\0')
-	//		count++;
-	//		save++;
-	//}
-	while (buf[i] != '\0' && i < BUFFER_SIZE)
-	{
-		if (buf[i] == '\n')
-			break ;
-		save[i] = buf[i];
-		i++;
-	}
-}
-
-//void	find_new_line(int fd, char **line, char **st_arr, char *buf)
-//{
-
-//}
+size_t	read_number(int fd);
+char	*read_line(int fd);
+#include <string.h>
 
 char	*get_next_line(int fd)
 {
 	char		*buf;
-	const char	*save;
-	static char	*line;
 	char		*ret;
+	char		*new_line_ptr;
+	static char	*save;
+	ssize_t		rd_num;
 
-	save = (char *)malloc(sizeof(char) * 100);
-	//buf = (char *)malloc(sizeof(char) * BUFFER_SIZE);
-	//error = buf_error(buf);
-	if (!buf)
+	if (fd < 0 || fd >= OPEN_MAX || BUFFER_SIZE < 1)
 		return (NULL);
-	read_fd(fd, save);
+	buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (save == NULL)
+		save = ft_strdup("");
+	while (1)
+	{
+		rd_num = read(fd, buf, BUFFER_SIZE);
+		if (rd_num <= 0)
+		{
+			//if (rd_num == 0 && ft_strlen(save) == 0)
+			//	return (NULL);
+			break ;
+		}
+		buf[rd_num] = '\0';
+		save = ft_strjoin(save, buf);
+		if (new_line_ptr = ft_strchr(save, '\n'))
+		{
+			ret = (char *)malloc(sizeof(char) * (new_line_ptr - save + 1));
+			ret = ft_memcpy(ret, save, new_line_ptr - save + 1);
+			ret[new_line_ptr - save + 1] = '\0';
+			save = ft_strdup(new_line_ptr + 1);
+			//saveのなかにあと何個改行入っているかの処理
+			//123\n456¥0
+			//printf("aa %s\n", save);
+			break ;
+		}
+	}
+	//if (!buf)
+	//	return (NULL);
+	// = read_line(fd);
+	//while (*buf != '\n')
 	//{
-	//	buf[ret] = '\0';
-	//	if (!*line)
-	//		tmp = ft_strdup(buf);
-	//	else
-	//		tmp = ft_strjoin(buf);
-	//	if (*line)
-	//		free(*line);
-	//	if (ft_strchr(buf, '\n'))
-	//		break ;
+	//	save = read_line(fd);
+	//	ft_strjoin(save, buf);
 	//}
-	return (save);
-	//return (line);
+	return (ret);
 }
 
-//fd = open("text.txt", O_RDONLY);
-//if (fd == -1)
+//size_t	read_number(int fd)
 //{
-//	ft_printf("error");
-//	return (NULL);
-//}
-//while (fd != EOF)
-//{
-//	read_fd(fd, line, save);
-//	if (*buf == '\n')
-//		find_new_line(fd, line, save);
-//}
-//free(buf);
+//	size_t	rd_num;
+//	char	*buffer;
+//	char	*read_ptr;
 
-#include <stdio.h>
+//	rd_num = 0;
+//	read_ptr = read(fd, buffer, 1);
+//	while (&read_ptr != '\n' || rd_num < BUFFER_SIZE)
+//	{
+//		read_ptr = read(fd, buffer, 1);
+//		read_ptr++;
+//		rd_num++;
+//	}
+//	read_ptr -= rd_num;
+//	return (rd_num);
+//}
+
+char	*read_line(int fd)
+{
+	size_t	i;
+	char	*buffer;
+
+	i = 0;
+	buffer = read(fd, buffer, 1);
+	while (&buffer != '\n' || i < BUFFER_SIZE)
+	{
+		buffer = read(fd, buffer, 1);
+		i++;
+		buffer++;
+	}
+	return (buffer);
+}
 
 int	main(void)
 {
-	char	*moji;
 	int		fd;
+	int		index;
+	char	*gnl;
 
+	index = 0;
 	fd = open("text.txt", O_RDONLY);
-	moji = get_next_line(fd);
-	printf("%s\n", moji);
+	//while (1)
+	for (int i = 0; i < 10; i++)
+	{
+		gnl = get_next_line(fd);
+		if (gnl == NULL)
+			break ;
+		printf("(%d): %s\n", index++, gnl);
+		free(gnl);
+	}
+	printf('\n');
 	close(fd);
-	return (0);
 }
