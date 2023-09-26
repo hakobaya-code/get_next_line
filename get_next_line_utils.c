@@ -6,7 +6,7 @@
 /*   By: hakobaya <hakobaya@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 10:45:35 by hakobaya          #+#    #+#             */
-/*   Updated: 2023/09/24 05:29:24 by hakobaya         ###   ########.fr       */
+/*   Updated: 2023/09/26 14:42:50 by hakobaya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,24 +27,16 @@ size_t	ft_strlen(const char *s1)
 
 char	*ft_strchr(const char *s, int c)
 {
-	int		i;
-	char	*str;
-
-	i = 0;
-	str = (char *)s;
-	if (c == '\0')
+	if (s == NULL)
+		return (NULL);
+	while (*s != '\0')
 	{
-		i = ft_strlen(str);
-		return (&str[i]);
+		if (*s == c)
+			return (s);
+		s++;
 	}
-	while (str[i] != c && str[i] != '\0')
-		i++;
-	if (str[i] == c)
-		return (&str[i]);
 	return (NULL);
 }
-
-#include <stdio.h>
 
 char	*ft_strdup(const char *s1)
 {
