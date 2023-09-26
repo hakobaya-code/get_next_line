@@ -6,13 +6,13 @@
 /*   By: hakobaya <hakobaya@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 10:45:35 by hakobaya          #+#    #+#             */
-/*   Updated: 2023/09/26 14:42:50 by hakobaya         ###   ########.fr       */
+/*   Updated: 2023/09/26 15:15:00 by hakobaya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t	ft_strlen(const char *s1)
+size_t	len(const char *s1)
 {
 	size_t	i;
 
