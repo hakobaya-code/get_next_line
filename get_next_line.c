@@ -6,30 +6,35 @@
 /*   By: hakobaya <hakobaya@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/23 10:18:33 by hakobaya          #+#    #+#             */
-/*   Updated: 2023/09/26 18:16:46 by hakobaya         ###   ########.fr       */
+/*   Updated: 2023/09/28 18:36:50 by hakobaya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-ssize_t	read_line(int fd, char *buf);
-char	*line_combination(int fd, char *save);
-
-
 char	*get_next_line(int fd)
 {
 	static char	*save;
-	char		buf[BUFFER_SIZE + 1];
+	char		*buf;
 	char		*ret;
 	ssize_t		read_len;
-	char		*save_copy;
+
+	//read(save);
+	//line = getline(save)
+	//save = get_new_save(save)
 
 	while (1) //改行があるか読むものがなくなるまで
 	{
-		save_copy = save;
 		if (save) //staticのなかみをしらべる
-			ret = line_combination(fd, save_copy);
+		{
+			ret = line_combination(fd, save);
+			//
+			if (ret)
+				return (ret);
+		}
 		read_len = read_line(fd, buf);
+		if (read_len == 0)
+			break ;
 		if (save == NULL) //１かいめの処理,bufをそのままsaveにいれる、
 			save = ft_strdup(buf);
 		else //saveとbufを結合してsaveに入れる
@@ -65,12 +70,12 @@ char	*line_combination(int fd, char *save)
 	{
 		ret = ft_calloc(sizeof(char), tail - save + 2);
 		ret = ft_memcpy(ret, save, tail - save + 1); //文字列＋改行
-		save = ft_strdup(tail + 1);                  //staticの更新　残りを突っ込む
+		save = ft_strdup(tail + 1); //staticの更新　残りを突っ込む
 		if (*save == '\0')//saveが終端ならNULLにしておく
 			save = NULL;
 		return (ret);
 	}
-	return (ret);
+	return (NULL);  //改行がなかった時の返すやつ
 }
 
 void	*ft_calloc(size_t count, size_t size)
@@ -139,7 +144,6 @@ int	main(void)
 
 	index = 0;
 	fd = open("text.txt", O_RDONLY);
-	//while (1)
 	for (int i = 0; i < 10; i++)
 	{
 		gnl = get_next_line(fd);

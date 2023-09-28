@@ -6,7 +6,7 @@
 /*   By: hakobaya <hakobaya@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 10:35:50 by hakobaya          #+#    #+#             */
-/*   Updated: 2023/09/26 18:13:31 by hakobaya         ###   ########.fr       */
+/*   Updated: 2023/09/28 18:16:33 by hakobaya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,6 @@ void	*ft_memcpy(void *dst, const void *src, size_t n);
 void	*ft_calloc(size_t count, size_t size);
 size_t	ft_strlen(const char *s1);
 ssize_t	read_line(int fd, char *buf);
-char	*line_combination(int fd, char *save);
+static char	*line_combination(int fd, char *save);
 
 #endif
