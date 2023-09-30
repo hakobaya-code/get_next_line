@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hakobaya <hakobaya@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/23 10:18:33 by hakobaya          #+#    #+#             */
-/*   Updated: 2023/09/28 18:36:50 by hakobaya         ###   ########.fr       */
+/*   Created: 2023/09/28 20:15:13 by hakobaya          #+#    #+#             */
+/*   Updated: 2023/09/30 16:57:23 by hakobaya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,126 +15,104 @@
 char	*get_next_line(int fd)
 {
 	static char	*save;
-	char		*buf;
-	char		*ret;
-	ssize_t		read_len;
+	char		*line;
+	size_t		disp_len;
 
-	//read(save);
-	//line = getline(save)
-	//save = get_new_save(save)
+	disp_len = 0;
+	save = read_line(fd, save);
+	//DEBUG_F
+	//printf("%s\n", save);
+	line = get_line(save, &disp_len);
+	//printf("save[%s]\n", save);
+	//printf("disp_len[%d]\n", disp_len);
+	save += disp_len;
+	//printf("save[%s]\n", save);
+	//DEBUG_F
+	//save = save_line(save);
+	//DEBUG_F
+	if (line == '\0')
+		return (NULL);
+	return (line);
+}
 
-	while (1) //改行があるか読むものがなくなるまで
+char	*read_line(int fd, char *save)
+{
+	char	*buf;
+	size_t	read_len;
+	size_t	n_flag;
+
+	read_len = 0;
+	n_flag = 0;
+	buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!buf)
+		return (NULL);
+	while (1)
 	{
-		if (save) //staticのなかみをしらべる
-		{
-			ret = line_combination(fd, save);
-			//
-			if (ret)
-				return (ret);
-		}
-		read_len = read_line(fd, buf);
-		if (read_len == 0)
+		if (n_flag == 1)
 			break ;
-		if (save == NULL) //１かいめの処理,bufをそのままsaveにいれる、
+		read_len = read(fd, buf, BUFFER_SIZE);
+		if (read_len == 0)
+			return (NULL);
+		buf[read_len] = '\0';
+		if (!save)
 			save = ft_strdup(buf);
-		else //saveとbufを結合してsaveに入れる
+		else
 			save = ft_strjoin(save, buf);
+		if (ft_strchr(save, '\n') || ft_strchr(save, '\0'))
+			n_flag = 1;
 	}
-	if (save) //改行がなかった時buffsizeよりも文字数多い時
+	return (save);
+}
+
+char	*get_line(char *save, size_t *disp_len)
+{
+	char	*line;
+	char	*head;
+	char	*newline;
+
+	newline = ft_strchr(save, '\n');
+	//DEBUG_F
+	//printf("%s\n", save);
+	head = save;
+	if (newline)
 	{
-		ret = ft_strdup(save);
-		save = NULL;
-		return (ret);
+		//DEBUG_F
+		line = (char *)malloc(sizeof(char) * (newline - head + 2));
+		if (line == NULL)
+			return (NULL);
+		line[newline - head - 1] = '\n';
+		save += newline - head + 1;
+		*disp_len = newline - head + 1;
 	}
-	return (NULL); //saveもNULLのため終了
+	else
+		return (ft_strdup(save));
+	//DEBUG_F
+	line[newline - head] = '\0';
+	ft_memcpy(line, head, newline - head);
+	//DEBUG_F
+	//printf("head[%s]\n", head);
+	//printf("line[%s]\n", line);
+	//printf("save[%s]\n", save);
+	return (line);
 }
 
-ssize_t	read_line(int fd, char *buf)
+char	*save_line(char *save)
 {
-	ssize_t	read_len;
+	char	*new_save;
+	size_t	len;
 
-	read_len = read(fd, buf, BUFFER_SIZE);
-	if (read_len == 0)
-		return (0);
-	buf[read_len] = '\0';
-	return (read_len);
-}
-
-char	*line_combination(int fd, char *save)
-{
-	char	*tail;
-	char	*ret;
-
-	tail = ft_strchr(save, '\n');
-	if (tail) //改行があった時
+	DEBUG_F
+	if (save == NULL)
+		return (NULL);
+	DEBUG_F
+	while (1)
 	{
-		ret = ft_calloc(sizeof(char), tail - save + 2);
-		ret = ft_memcpy(ret, save, tail - save + 1); //文字列＋改行
-		save = ft_strdup(tail + 1); //staticの更新　残りを突っ込む
-		if (*save == '\0')//saveが終端ならNULLにしておく
-			save = NULL;
-		return (ret);
+		if (save == '\0')
+			break ;
+		*new_save++ = *save++;
 	}
-	return (NULL);  //改行がなかった時の返すやつ
+	return (new_save);
 }
-
-void	*ft_calloc(size_t count, size_t size)
-{
-	char	*ret;
-
-	if (size != 0 && count >= SIZE_T_MAX / size)
-		return (NULL);
-	ret = (char *)malloc(sizeof(char) * (count * size));
-	if (!ret)
-		return (NULL);
-	while (ret)
-		*ret++ = '\0';
-	return (ret);
-}
-
-//char	*get_next_line(int fd)
-//{
-//	static char	*save;
-//	char		buf[BUFFER_SIZE + 1];
-//	char		*ret;
-//	ssize_t		read_len;
-//	char		*tail;
-
-//	if (fd < 0 || fd >= OPEN_MAX || BUFFER_SIZE < 1)
-//		return (NULL);
-//	while (1)
-//	{
-//		read_len = read(fd, buf, BUFFER_SIZE);
-//		if (read_len <= 0)
-//		{
-//			//if (read_len == 0 && len(save) == 0)
-//			//	return (NULL);
-//			break ;
-//		}
-//		buf[read_len] = '\0';
-//		save = ft_strjoin(save, buf);
-//		if (new_line_ptr = ft_strchr(save, '\n'))
-//		{
-//			ret = (char *)malloc(sizeof(char) * (new_line_ptr - save + 1));
-//			ret = ft_memcpy(ret, save, new_line_ptr - save + 1);
-//			ret[new_line_ptr - save + 1] = '\0';
-//			save = ft_strdup(new_line_ptr + 1);
-//			//saveのなかにあと何個改行入っているかの処理
-//			//123\n456¥0
-//			//printf("aa %s\n", save);
-//			break ;
-//		}
-//	}
-//	//if (!buf)
-//	//	return (NULL);
-//	// = read_line(fd);
-//	//while (*buf != '\n')
-//	//{
-//	//	save = read_line(fd);
-//	//	ft_strjoin(save, buf);
-//	//}
-//	return (ret);
-//}
 
 int	main(void)
 {
@@ -144,7 +122,7 @@ int	main(void)
 
 	index = 0;
 	fd = open("text.txt", O_RDONLY);
-	for (int i = 0; i < 10; i++)
+	while (1)
 	{
 		gnl = get_next_line(fd);
 		if (gnl == NULL)
