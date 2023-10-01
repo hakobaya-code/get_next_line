@@ -6,7 +6,7 @@
 /*   By: hakobaya <hakobaya@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 10:35:50 by hakobaya          #+#    #+#             */
-/*   Updated: 2023/09/30 16:56:45 by hakobaya         ###   ########.fr       */
+/*   Updated: 2023/10/01 15:48:54 by hakobaya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 4
+#  define BUFFER_SIZE 10
 # endif
 
 # include <fcntl.h>
@@ -34,7 +34,7 @@ void	*ft_memcpy(void *dst, const void *src, size_t n);
 void	*ft_calloc(size_t count, size_t size);
 size_t	ft_strlen(const char *s1);
 char	*read_line(int fd, char *save);
-char	*get_line(char *save, size_t *disp_len);
+char	*get_line(char *save);
 char	*save_line(char *save);
 
 #endif

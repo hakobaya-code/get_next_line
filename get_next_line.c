@@ -6,7 +6,7 @@
 /*   By: hakobaya <hakobaya@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/28 20:15:13 by hakobaya          #+#    #+#             */
-/*   Updated: 2023/09/30 16:57:23 by hakobaya         ###   ########.fr       */
+/*   Updated: 2023/10/01 18:24:46 by hakobaya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,104 +15,164 @@
 char	*get_next_line(int fd)
 {
 	static char	*save;
+	char		*new_save;
 	char		*line;
-	size_t		disp_len;
+	char		*head;
 
-	disp_len = 0;
+	if (fd < 0 || fd >= INT_MAX)
+		return (NULL);
+	save = (char *)malloc(sizeof(char) * 1);
+	save[0] = '\0';
 	save = read_line(fd, save);
 	//DEBUG_F
-	//printf("%s\n", save);
-	line = get_line(save, &disp_len);
 	//printf("save[%s]\n", save);
-	//printf("disp_len[%d]\n", disp_len);
-	save += disp_len;
+	line = get_line(save);
+	//DEBUG_F
 	//printf("save[%s]\n", save);
-	//DEBUG_F
-	//save = save_line(save);
-	//DEBUG_F
-	if (line == '\0')
+	//printf("line[%s]\n", line);
+	new_save = save_line(save);
+	if (new_save == NULL)
 		return (NULL);
+	//DEBUG_F
+	//printf("save[%s]\n", save);
+	//printf("new_save[%s]\n", new_save);
+	//save = head;
+	//DEBUG_F
+	save = new_save;
+	//DEBUG_F
+	printf("save[%s]\n", save);
+	//printf("line[%s]\n", line);
 	return (line);
 }
 
 char	*read_line(int fd, char *save)
 {
 	char	*buf;
+	char	*new_save;
 	size_t	read_len;
-	size_t	n_flag;
 
 	read_len = 0;
-	n_flag = 0;
 	buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buf)
 		return (NULL);
 	while (1)
 	{
-		if (n_flag == 1)
-			break ;
 		read_len = read(fd, buf, BUFFER_SIZE);
-		if (read_len == 0)
+		if (read_len < 0)
 			return (NULL);
-		buf[read_len] = '\0';
-		if (!save)
-			save = ft_strdup(buf);
+		if (read_len == 0)
+			return (save);
+		else if (!save)
+			new_save = ft_strdup(buf);
 		else
-			save = ft_strjoin(save, buf);
-		if (ft_strchr(save, '\n') || ft_strchr(save, '\0'))
-			n_flag = 1;
+			new_save = ft_strjoin(save, buf);
+		if (ft_strchr(new_save, '\n'))
+			break ;
+		//printf("new_save[%s]\n", new_save);
 	}
-	return (save);
+	buf[read_len] = '\0';
+	free(save);
+	free(buf);
+	return (new_save);
 }
 
-char	*get_line(char *save, size_t *disp_len)
+//char	*read_line(int fd, char *save)
+//{
+//	char	*buf;
+//	char	*new_save;
+//	size_t	read_len;
+
+//	read_len = 0;
+//	buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
+//	if (!buf)
+//		return (NULL);
+//	while (1)
+//	{
+//		read_len = read(fd, buf, BUFFER_SIZE);
+//		if (read_len == 0)
+//			return (NULL);
+//		buf[read_len] = '\0';
+//		if (!save)
+//			new_save = ft_strdup(buf);
+//		else
+//			new_save = ft_strjoin(save, buf);
+//		if (ft_strchr(save, '\n') || ft_strchr(save, '\0'))
+//			break ;
+//	}
+//	free(save);
+//	free(buf);
+//	return (new_save);
+//}
+
+char	*get_line(char *save)
 {
 	char	*line;
-	char	*head;
 	char	*newline;
+	size_t	len;
 
 	newline = ft_strchr(save, '\n');
+	len = newline - save;
 	//DEBUG_F
 	//printf("%s\n", save);
-	head = save;
 	if (newline)
-	{
-		//DEBUG_F
-		line = (char *)malloc(sizeof(char) * (newline - head + 2));
-		if (line == NULL)
-			return (NULL);
-		line[newline - head - 1] = '\n';
-		save += newline - head + 1;
-		*disp_len = newline - head + 1;
-	}
+		line = (char *)malloc(sizeof(char) * (len + 2));
 	else
 		return (ft_strdup(save));
-	//DEBUG_F
-	line[newline - head] = '\0';
-	ft_memcpy(line, head, newline - head);
-	//DEBUG_F
-	//printf("head[%s]\n", head);
-	//printf("line[%s]\n", line);
-	//printf("save[%s]\n", save);
+	if (line == NULL)
+		return (NULL);
+	ft_memcpy(line, save, len);
+	line[len] = '\0';
 	return (line);
 }
 
 char	*save_line(char *save)
 {
 	char	*new_save;
-	size_t	len;
+	char	*head;
+	size_t	save_len;
+	size_t	newsave_len;
+	size_t	i;
 
-	DEBUG_F
-	if (save == NULL)
+	head = save;
+	//DEBUG_F
+	//printf("save[%s]\n", save);
+	//DEBUG_F
+	//printf("head[%s]\n", head);
+	//DEBUG_F
+	save_len = ft_strlen(save);
+	i = 0;
+	while (*save++ != '\n')
+		i++;
+	//DEBUG_F
+	//printf("save_len[%zu]\n", save_len);
+	newsave_len = save_len - i + 1;
+	//DEBUG_F
+	//printf("newsave_len[%zu]\n", newsave_len);
+	new_save = (char *)malloc(sizeof(char) * (newsave_len + 1));
+	if (!new_save)
 		return (NULL);
-	DEBUG_F
-	while (1)
+	//DEBUG_F
+	//printf("head[%p]\n", head);
+	//printf("save[%s]\n", save);
+	i = 0;
+	while (i < newsave_len)
 	{
-		if (save == '\0')
-			break ;
-		*new_save++ = *save++;
+		new_save[i] = save[i];
+		i++;
 	}
+	new_save[i] = '\0';
+	//DEBUG_F
+	//printf("new_save[%s]\n", new_save);
+	save = head;
+	//DEBUG_F
+	//free(save); // saveの先頭ポインタ、同じ変数指定しないとダメかに戻らないとダメか確認できればhead指定したい
+	//DEBUG_F
+	//printf("after free save[%s]\n", save);
+	//printf("brefore return new_save[%s]\n", new_save);
 	return (new_save);
 }
+
+
 
 int	main(void)
 {
@@ -120,7 +180,7 @@ int	main(void)
 	int		index;
 	char	*gnl;
 
-	index = 0;
+	index = 1;
 	fd = open("text.txt", O_RDONLY);
 	while (1)
 	{
@@ -133,3 +193,8 @@ int	main(void)
 	printf("\n");
 	close(fd);
 }
+
+//__attribute__((destructor))
+//static void destructor() {
+//    system("leaks -q a.out");
+//}
