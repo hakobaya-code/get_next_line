@@ -6,7 +6,7 @@
 /*   By: hakobaya <hakobaya@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 10:45:35 by hakobaya          #+#    #+#             */
-/*   Updated: 2023/09/30 16:24:23 by hakobaya         ###   ########.fr       */
+/*   Updated: 2023/10/06 03:08:39 by hakobaya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,48 @@ char	*ft_strdup(const char *s1)
 	return (save);
 }
 
+void    f(char *str)
+{
+    PRINT_DEBUG_INFO
+    PRINT_DEBUG_INFO
+
+    while (*str)
+    {
+        PRINT_DEBUG_INFO
+        printf("c: [%c]\n", *str);
+        str++;
+    }
+    printf("\n");
+}
+
+char	*ft_strnjoin(char const *s1, char const *s2, int n)
+{
+	char	*dst;
+	int		len;
+	int		i;
+
+	if (s1 == NULL || s2 == NULL)
+		return (NULL);
+	len = ft_strlen(s1) + ft_strlen(s2);
+	if (n < len)
+		len = n;
+	dst = (char *)ft_calloc(sizeof(char), len + 1);
+	if (dst == NULL)
+		return (NULL);
+	i = 0;
+	while (i < len && *s1)
+	{
+		dst[i] = *s1++;
+		i++;
+	}
+	while (i < len)
+	{
+		dst[i] = *s2++;
+		i++;
+	}
+	return (dst);
+}
+
 char	*ft_strjoin(char const *s1, char const *s2)
 {
 	char	*dst;
@@ -95,7 +137,26 @@ void	*ft_memcpy(void *dst, const void *src, size_t n)
 	}
 	return (dst);
 }
-//#include <stdio.h>
+
+void	*ft_calloc(size_t count, size_t size)
+{
+	void			*b;
+	unsigned char	*s;
+	int				c;
+	size_t			len;
+
+	if (size != 0 && count > SIZE_MAX / size)
+		return (NULL);
+	b = malloc(count * size);
+	s = (unsigned char *)b;
+	c = 0;
+	len = count * size;
+	if (b == NULL)
+		return (b);
+	while (len-- > 0)
+		*s++ = (unsigned char)c;
+	return (b);
+}
 
 //void	test(const char *s1, const char *s2)
 //{
