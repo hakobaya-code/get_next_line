@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*   junk_get_next_line_utils.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hakobaya <hakobaya@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 10:45:35 by hakobaya          #+#    #+#             */
-/*   Updated: 2023/10/06 08:39:31 by hakobaya         ###   ########.fr       */
+/*   Updated: 2023/10/06 08:35:59 by hakobaya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,65 @@ char	*ft_strchr(const char *s, char c)
 	return (NULL);
 }
 
+char	*ft_strdup(const char *s1)
+{
+	char	*dst;
+	char	*save;
+
+	if (s1 == NULL)
+		return (NULL);
+	dst = (char *)malloc(sizeof(char) * (ft_strlen(s1) + 1));
+	if (dst == NULL)
+		return (NULL);
+	save = dst;
+	while (*s1)
+		*dst++ = *s1++;
+	*dst = '\0';
+	return (save);
+}
+
+void    f(char *str)
+{
+    PRINT_DEBUG_INFO
+    PRINT_DEBUG_INFO
+
+    while (*str)
+    {
+        PRINT_DEBUG_INFO
+        printf("c: [%c]\n", *str);
+        str++;
+    }
+    printf("\n");
+}
+
+char	*ft_strnjoin(char const *s1, char const *s2, int n)
+{
+	char	*dst;
+	int		len;
+	int		i;
+
+	if (s1 == NULL || s2 == NULL)
+		return (NULL);
+	len = ft_strlen(s1) + ft_strlen(s2);
+	if (n < len)
+		len = n;
+	dst = (char *)ft_calloc(sizeof(char), len + 1);
+	if (dst == NULL)
+		return (NULL);
+	i = 0;
+	while (i < len && *s1)
+	{
+		dst[i] = *s1++;
+		i++;
+	}
+	while (i < len)
+	{
+		dst[i] = *s2++;
+		i++;
+	}
+	return (dst);
+}
+
 char	*ft_strjoin(char const *s1, char const *s2)
 {
 	char	*dst;
@@ -59,6 +118,47 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	*dst = '\0';
 	return (save);
 }
+
+#include "get_next_line.h"
+
+char	*ft_strnjoin(char const *s1, char const *s2, int n)
+{
+	char	*dst;
+	int		len;
+	int		i;
+
+	if (s1 == NULL || s2 == NULL)
+		return (NULL);
+	len = ft_strlen(s1) + ft_strlen(s2);
+	if (n < len)
+		len = n;
+	dst = (char *)ft_calloc(sizeof(char), len + 1);
+	if (dst == NULL)
+		return (NULL);
+	i = 0;
+	while (i < len && *s1)
+	{
+		dst[i] = *s1++;
+		i++;
+	}
+	while (i < len)
+	{
+		dst[i] = *s2++;
+		i++;
+	}
+	return (dst);
+}
+
+//int	main(void)
+//{
+//	char *s1 = "123456";
+//	char *s2 = "7890";
+//	int i = 8;
+//	char *str;
+
+//	str = ft_strnjoin(s1, s2, i);
+//	printf("str [%s]", str);
+//}
 
 void	*ft_memcpy(void *dst, const void *src, size_t n)
 {
@@ -98,23 +198,6 @@ void	*ft_calloc(size_t count, size_t size)
 		*s++ = (unsigned char)c;
 	return (b);
 }
-
-//char	*ft_strdup(const char *s1)
-//{
-//	char	*dst;
-//	char	*save;
-
-//	if (s1 == NULL)
-//		return (NULL);
-//	dst = (char *)malloc(sizeof(char) * (ft_strlen(s1) + 1));
-//	if (dst == NULL)
-//		return (NULL);
-//	save = dst;
-//	while (*s1)
-//		*dst++ = *s1++;
-//	*dst = '\0';
-//	return (save);
-//}
 
 //void	test(const char *s1, const char *s2)
 //{

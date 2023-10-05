@@ -6,7 +6,7 @@
 /*   By: hakobaya <hakobaya@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/28 20:15:13 by hakobaya          #+#    #+#             */
-/*   Updated: 2023/10/06 05:53:57 by hakobaya         ###   ########.fr       */
+/*   Updated: 2023/10/06 08:38:23 by hakobaya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char	*get_next_line(int fd)
 	if (fd < 0 || fd > OPEN_MAX || BUFFER_SIZE <= 0 || BUFFER_SIZE >= INT_MAX)
 		return (NULL);
 	buf = (char *)ft_calloc(sizeof(char), (BUFFER_SIZE + 1));
-	if (!buf) //static? save をfree して　NULL詰め
+	if (!buf)
 		return (free2end(&save));
 	save = read_file(fd, save, buf);
 	free(buf);
@@ -74,34 +74,6 @@ char	*read_file(int fd, char *save, char *buf)
 	return (save);
 }
 
-//char	*read_file(int fd, char *save, char *buf)
-//{
-//	char	*tmp_save;
-//	char	*new_save;
-//	ssize_t	read_len;
-
-//	if (save == NULL)
-//		save = (char *)ft_calloc(sizeof(char), 1);
-//	read_len = 0;
-//	new_save = save;
-//	while (new_save && !ft_strchr(new_save, '\n'))
-//	{
-//		read_len = read(fd, buf, BUFFER_SIZE);
-//		if (read_len < 0)
-//			return (free2end(&save));
-//		else if (read_len == 0)
-//			break ;
-//		else
-//		{
-//			buf[read_len] = '\0';
-//			tmp_save = ft_strjoin(new_save, buf);
-//			free(new_save);
-//			new_save = tmp_save;
-//		}
-//	}
-//	return (new_save);
-//}
-
 char	*get_line(char *save)
 {
 	char	*line;
@@ -145,30 +117,30 @@ char	*save_remainder(char *save)
 	return (new_save);
 }
 
-int	main(void)
-{
-	int		fd;
-	int		index;
-	char	*gnl;
+//int	main(void)
+//{
+//	int		fd;
+//	int		index;
+//	char	*gnl;
 
-	printf("\n\n\n\n○○○○○○○○○○○○ START ○○○○○○○○○○○○\n\n\n\n");
-	index = 1;
-	fd = open("text3.txt", O_RDONLY);
-	//fd = 10000;
-	while (1)
-	{
-		gnl = get_next_line(fd);
-		if (gnl == NULL)
-			break ;
-		printf("(%d): %s", index++, gnl);
-		free(gnl);
-	}
-	printf("\n");
-	close(fd);
-	printf("\n\n○○○○○○○○○○○○ END ○○○○○○○○○○○○\n\n");
-}
+//	printf("\n\n\n\n○○○○○○○○○○○○ START ○○○○○○○○○○○○\n\n\n\n");
+//	index = 1;
+//	fd = open("text3.txt", O_RDONLY);
+//	//fd = 10000;
+//	while (1)
+//	{
+//		gnl = get_next_line(fd);
+//		if (gnl == NULL)
+//			break ;
+//		printf("(%d): %s", index++, gnl);
+//		free(gnl);
+//	}
+//	printf("\n");
+//	close(fd);
+//	printf("\n\n○○○○○○○○○○○○ END ○○○○○○○○○○○○\n\n");
+//}
 
-__attribute__((destructor)) static void destructor()
-{
-	system("leaks -q a.out");
-}
+//__attribute__((destructor)) static void destructor()
+//{
+//	system("leaks -q a.out");
+//}

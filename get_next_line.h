@@ -6,7 +6,7 @@
 /*   By: hakobaya <hakobaya@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 10:35:50 by hakobaya          #+#    #+#             */
-/*   Updated: 2023/10/06 04:49:41 by hakobaya         ###   ########.fr       */
+/*   Updated: 2023/10/06 08:37:54 by hakobaya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,25 +17,38 @@
 #  define BUFFER_SIZE 4
 # endif
 
-# include <fcntl.h>
 # include <limits.h>
-# include <stdio.h>
 # include <stdlib.h>
-# include <string.h>
 # include <unistd.h>
 
-#include <stdio.h>
+char	*get_next_line(int fd);
+char	*ft_strchr(const char *s, char c);
+char	*ft_strjoin(char const *s1, char const *s2);
+void	*ft_memcpy(void *dst, const void *src, size_t n);
+void	*ft_calloc(size_t count, size_t size);
+size_t	ft_strlen(const char *s1);
+char	*get_line(char *save);
+char	*read_file(int fd, char *save, char *buf);
+char	*save_remainder(char *save);
+void	*free2end(char **save);
+//char	*ft_strdup(char const *s1);
 
-#ifndef DEBUG_MODE
-# define DEBUG_MODE            1 //0 or 1
 #endif
-#define COLOR_RED           "\e[31m"
-#define COLOR_RESET         "\e[0m"
-#define COLOR_BOLD          "\e[1m"
 
-#define PRINT_DEBUG_INFO    { static int call_count = 1; if (DEBUG_MODE) { \
-                    dprintf(2, "%s%s#%s in %s: %s :(%d)    called (%d)\n", \
-                    COLOR_RED, COLOR_BOLD, COLOR_RESET, __func__, __FILE__, __LINE__, call_count++);}};
+//# define DEBUG_F printf("LINE %d: FILE %s FUNC %s\n", __LINE__, __FILE__, __func__);
+
+//#include <stdio.h>
+
+//#ifndef DEBUG_MODE
+//# define DEBUG_MODE            1 //0 or 1
+//#endif
+//#define COLOR_RED           "\e[31m"
+//#define COLOR_RESET         "\e[0m"
+//#define COLOR_BOLD          "\e[1m"
+
+//#define PRINT_DEBUG_INFO    { static int call_count = 1; if (DEBUG_MODE) {
+//                    dprintf(2, "%s%s#%s in %s: %s :(%d)    called (%d)\n",
+//                    COLOR_RED, COLOR_BOLD, COLOR_RESET, __func__, __FILE__, __LINE__, call_count++);}};
 
 
 
@@ -72,19 +85,3 @@
 ** gcc $(FILE).c -D DEBUG_MODE=1
 **
 */
-# define DEBUG_F printf("LINE %d: FILE %s FUNC %s\n", __LINE__, __FILE__, __func__);
-
-char	*get_next_line(int fd);
-char	*ft_strchr(const char *s, char c);
-char	*ft_strjoin(char const *s1, char const *s2);
-//char	*ft_strnjoin(char const *s1, char const *s2, int n);
-char	*ft_strdup(char const *s1);
-void	*ft_memcpy(void *dst, const void *src, size_t n);
-void	*ft_calloc(size_t count, size_t size);
-size_t	ft_strlen(const char *s1);
-char	*get_line(char *save);
-char	*read_file(int fd, char *save, char *buf);
-char	*save_remainder(char *save);
-void	*free2end(char **save);
-
-#endif
