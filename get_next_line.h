@@ -6,7 +6,7 @@
 /*   By: hakobaya <hakobaya@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 10:35:50 by hakobaya          #+#    #+#             */
-/*   Updated: 2023/10/06 03:18:57 by hakobaya         ###   ########.fr       */
+/*   Updated: 2023/10/06 04:49:41 by hakobaya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,13 +77,14 @@
 char	*get_next_line(int fd);
 char	*ft_strchr(const char *s, char c);
 char	*ft_strjoin(char const *s1, char const *s2);
-char	*ft_strnjoin(char const *s1, char const *s2, int n);
+//char	*ft_strnjoin(char const *s1, char const *s2, int n);
 char	*ft_strdup(char const *s1);
 void	*ft_memcpy(void *dst, const void *src, size_t n);
 void	*ft_calloc(size_t count, size_t size);
 size_t	ft_strlen(const char *s1);
-char	*get_line(char *save, int *flag);
-char	*read_file(int fd, char *save, char *buf, int *flag);
-char	*get_remainder(char *save);
+char	*get_line(char *save);
+char	*read_file(int fd, char *save, char *buf);
+char	*save_remainder(char *save);
+void	*free2end(char **save);
 
 #endif
